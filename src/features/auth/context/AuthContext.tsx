@@ -22,129 +22,41 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to generate a random password
-const generatePassword = () => `welcome${Date.now().toString().slice(-4)}`;
+// Mock user for development
+const mockParentUser: User = {
+  id: '1',
+  email: 'parent@example.com',
+  username: 'parent',
+  role: 'parent',
+  family_id: '1',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    let authSubscription: { unsubscribe: () => void } | null = null;
-
-    const handleAuthChange = async (session: any) => {
-      if (!mounted) return;
-
-      try {
-        if (!session?.user) {
-          setUser(null);
-          setChildAccounts([]);
-          return;
-        }
-
-        const userData = await db.users.getById(session.user.id);
-        if (!mounted) return;
-
-        if (!userData) {
-          setUser(null);
-          setError('User data not found');
-          return;
-        }
-
-        setUser(userData);
-
-        if (userData.role === 'parent') {
-          const children = await db.children.getByParentId(userData.id);
-          if (mounted) {
-            setChildAccounts(children.map(child => ({
-              id: child.id,
-              email: child.email,
-              password: child.password
-            })));
-          }
-        }
-      } catch (err) {
-        if (mounted) {
-          setUser(null);
-          setChildAccounts([]);
-          setError('Failed to fetch user data');
-        }
-      } finally {
-        if (mounted && !isInitialized) {
-          setIsInitialized(true);
-          setLoading(false);
-        }
-      }
-    };
-
-    const initializeAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (mounted) {
-          await handleAuthChange(session);
-          
-          // Only set up the subscription after initial session check
-          const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-            handleAuthChange(session);
-          });
-          authSubscription = subscription;
-        }
-      } catch (err) {
-        if (mounted) {
-          setError('Failed to initialize auth');
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    return () => {
-      mounted = false;
-      if (authSubscription) {
-        authSubscription.unsubscribe();
-      }
-    };
-  }, [isInitialized]);
+    // Simulate initial auth check
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
       setError(null);
-
-      // For parent@example.com, try to create the account first
-      if (email === 'parent@example.com') {
-        await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { role: 'parent' } }
-        }).catch(() => {
-          // Ignore error if user already exists
-        });
-      }
-
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) throw signInError;
-      if (!data.user) throw new Error('Login failed');
-
-      let userData = await db.users.getById(data.user.id);
       
-      if (!userData && email === 'parent@example.com') {
-        userData = await db.users.createParentUser(data.user.id, email);
+      // Mock login for parent@example.com
+      if (email === 'parent@example.com' && password === 'welcome1234') {
+        setUser(mockParentUser);
+        return mockParentUser;
       }
 
-      if (!userData) {
-        throw new Error('User account not found');
-      }
-
-      return userData;
+      throw new Error('Invalid credentials');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
       throw err;
@@ -154,11 +66,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       setError(null);
-      await supabase.auth.signOut();
+      setUser(null);
+      setChildAccounts([]);
     } catch (err) {
       setError('Failed to log out');
       throw err;
     }
+  };
+
+  const addChild = async (childData: ChildFormData) => {
+    if (!user || user.role !== 'parent') {
+      throw new Error('Only parents can add children');
+    }
+
+    const childEmail = `${childData.name.toLowerCase().replace(/\s+/g, '.')}@family.com`;
+    const temporaryPassword = `welcome${Date.now().toString().slice(-4)}`;
+
+    const newChild = {
+      id: Date.now().toString(),
+      email: childEmail,
+      password: temporaryPassword,
+    };
+
+    setChildAccounts(prev => [...prev, newChild]);
+    return { email: childEmail, password: temporaryPassword };
   };
 
   const getChildPassword = async (childEmail: string) => {
@@ -170,9 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const child = childAccounts.find(account => account.email === childEmail);
     if (!child) throw new Error('Child not found');
 
-    const newPassword = generatePassword();
-    await db.children.updatePassword(child.id, newPassword);
-
+    const newPassword = `welcome${Date.now().toString().slice(-4)}`;
+    
     setChildAccounts(prev => 
       prev.map(account =>
         account.email === childEmail
@@ -182,34 +112,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     return { email: childEmail, password: newPassword };
-  };
-
-  const addChild = async (childData: ChildFormData) => {
-    if (!user || user.role !== 'parent') {
-      throw new Error('Only parents can add children');
-    }
-
-    const childEmail = `${childData.name.toLowerCase().replace(/\s+/g, '.')}@family.com`;
-    const temporaryPassword = generatePassword();
-
-    const newChild = await db.children.create({
-      username: childData.name,
-      email: childEmail,
-      age: childData.age,
-      reading_level: 'beginner',
-      interests: childData.readingInterests,
-      parent_id: user.id,
-      family_id: user.family_id,
-      password: temporaryPassword
-    });
-
-    setChildAccounts(prev => [...prev, {
-      id: newChild.id,
-      email: childEmail,
-      password: temporaryPassword
-    }]);
-
-    return { email: childEmail, password: temporaryPassword };
   };
 
   return (
