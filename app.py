@@ -3,6 +3,7 @@ import os
 import re
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import sqlite3
 
 # Create Flask application instance
 app = Flask(__name__)
@@ -12,8 +13,81 @@ app.config['SECRET_KEY'] = 'your-secret-key-change-this-in-production'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# Create upload directory if it doesn't exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Database setup
+DATABASE = 'contact_submissions.db'
+
+def init_db():
+    """Initialize the database with contact submissions table"""
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contact_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT,
+            age INTEGER,
+            date TEXT,
+            message TEXT NOT NULL,
+            priority TEXT,
+            topics TEXT,
+            satisfaction INTEGER,
+            filename TEXT,
+            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
+def save_contact_submission(data):
+    """Save contact form submission to database"""
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        INSERT INTO contact_submissions 
+        (name, email, phone, age, date, message, priority, topics, satisfaction, filename)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        data.get('name'),
+        data.get('email'),
+        data.get('phone'),
+        data.get('age'),
+        str(data.get('date')) if data.get('date') else None,
+        data.get('message'),
+        data.get('priority'),
+        ','.join(data.get('topics', [])),
+        data.get('satisfaction'),
+        data.get('filename')
+    ))
+    
+    submission_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    
+    return submission_id
+
+def get_all_submissions():
+    """Get all contact submissions from database"""
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT id, name, email, phone, age, date, message, priority, topics, 
+               satisfaction, filename, submitted_at
+        FROM contact_submissions 
+        ORDER BY submitted_at DESC
+    ''')
+    
+    submissions = cursor.fetchall()
+    conn.close()
+    
+    return submissions
+
+# Initialize database on startup
+init_db()
 
 # Validation utilities
 class ValidationError(Exception):
@@ -224,13 +298,17 @@ def contact():
             return render_template('contact.html', title='Contact', form_data=request.form)
         
         # If validation passes, process the form
-        flash(f'Thank you {validated_data["name"]}! Your message has been received and validated successfully.', 'success')
+        # Save the submission to the database
+        submission_id = save_contact_submission(validated_data)
         
-        # Log the validated data (in a real app, you'd save to database)
-        print("=== VALIDATED FORM DATA ===")
+        flash(f'Thank you {validated_data["name"]}! Your message has been received and saved successfully. (Submission ID: {submission_id})', 'success')
+        
+        # Log the validated data for debugging
+        print("=== VALIDATED FORM DATA SAVED ===")
         for key, value in validated_data.items():
             print(f"{key}: {value}")
-        print("===========================")
+        print(f"Saved with ID: {submission_id}")
+        print("=================================")
         
         return redirect(url_for('contact'))
     
@@ -245,6 +323,12 @@ def validation_demo():
 def form_demo():
     """Educational page about form concepts"""
     return render_template('form_demo.html', title='Form Demo')
+
+@app.route('/submissions')
+def submissions():
+    """View all contact form submissions"""
+    all_submissions = get_all_submissions()
+    return render_template('submissions.html', title='Contact Submissions', submissions=all_submissions)
 
 @app.route('/api/validate-email', methods=['POST'])
 def validate_email_api():
