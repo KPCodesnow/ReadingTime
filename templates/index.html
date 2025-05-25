@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Python Web App!</h1>
+            <p class="lead">
+                This is a learning project for building web applications with Python and Flask. 
+                Explore the different features and learn how to create modern web applications.
+            </p>
+            <hr class="my-4">
+            <p>
+                Start your journey by exploring the navigation menu above. Each section demonstrates 
+                different aspects of Flask web development.
+            </p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('about') }}" role="button">
+                Learn More
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">🐍 Python & Flask</h5>
+                <p class="card-text">
+                    Learn the fundamentals of web development using Python's Flask framework. 
+                    Build dynamic web applications with clean, readable code.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">🎨 Templates & Forms</h5>
+                <p class="card-text">
+                    Master Jinja2 templating engine and form handling. Create beautiful, 
+                    responsive user interfaces with Bootstrap integration.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">🗄️ Database Integration</h5>
+                <p class="card-text">
+                    Learn to work with databases using SQLAlchemy. Store and retrieve data 
+                    efficiently in your web applications.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Getting Started</h4>
+            <p>
+                This application demonstrates various Flask concepts including routing, templates, 
+                forms, and more. Use the navigation menu to explore different features.
+            </p>
+            <hr>
+            <p class="mb-0">
+                Check out the <a href="{{ url_for('contact') }}" class="alert-link">Contact page</a> 
+                to see form handling in action!
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

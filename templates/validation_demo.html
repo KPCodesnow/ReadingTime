@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">Server-Side Validation Demo</h1>
+            
+            <div class="alert alert-info">
+                <h5><i class="fas fa-info-circle"></i> What is Server-Side Validation?</h5>
+                <p class="mb-0">Server-side validation is the process of validating user input on the server before processing it. Unlike client-side validation, it cannot be bypassed by users and is essential for security and data integrity.</p>
+            </div>
+
+            <!-- Why Server-Side Validation -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Why Server-Side Validation is Critical</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-danger">❌ Client-Side Only Problems:</h5>
+                            <ul>
+                                <li>Can be disabled by users</li>
+                                <li>JavaScript can be turned off</li>
+                                <li>Malicious users can bypass it</li>
+                                <li>Browser compatibility issues</li>
+                                <li>Not secure for sensitive data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success">✅ Server-Side Benefits:</h5>
+                            <ul>
+                                <li>Cannot be bypassed by users</li>
+                                <li>Always executes regardless of browser</li>
+                                <li>Protects against malicious input</li>
+                                <li>Ensures data integrity</li>
+                                <li>Required for security compliance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Techniques -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Server-Side Validation Techniques</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>1. Input Sanitization</h5>
+                            <pre><code>name = name.strip()  # Remove whitespace
+email = email.lower()  # Normalize case</code></pre>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>2. Format Validation</h5>
+                            <pre><code>import re
+email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+if not re.match(email_pattern, email):
+    raise ValidationError("Invalid email")</code></pre>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>3. Range Validation</h5>
+                            <pre><code>if age < 13 or age > 120:
+    raise ValidationError("Invalid age")
+
+if len(message) < 10:
+    raise ValidationError("Message too short")</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Our Validation Functions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Our Validation Functions in Action</h3>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="validationAccordion">
+                        
+                        <!-- Email Validation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="emailHeading">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#emailCollapse">
+                                    Email Validation
+                                </button>
+                            </h2>
+                            <div id="emailCollapse" class="accordion-collapse collapse show" data-bs-parent="#validationAccordion">
+                                <div class="accordion-body">
+                                    <h6>What it checks:</h6>
+                                    <ul>
+                                        <li>Email is not empty</li>
+                                        <li>Matches proper email format (regex pattern)</li>
+                                        <li>Normalizes to lowercase</li>
+                                    </ul>
+                                    <h6>Example validation:</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Valid emails:</strong>
+                                            <ul class="text-success">
+                                                <li>user@example.com</li>
+                                                <li>test.email+tag@domain.co.uk</li>
+                                                <li>USER@DOMAIN.COM (normalized to lowercase)</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Invalid emails:</strong>
+                                            <ul class="text-danger">
+                                                <li>plainaddress</li>
+                                                <li>@missingdomain.com</li>
+                                                <li>missing@.com</li>
+                                                <li>spaces @domain.com</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Name Validation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="nameHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nameCollapse">
+                                    Name Validation
+                                </button>
+                            </h2>
+                            <div id="nameCollapse" class="accordion-collapse collapse" data-bs-parent="#validationAccordion">
+                                <div class="accordion-body">
+                                    <h6>What it checks:</h6>
+                                    <ul>
+                                        <li>Name is not empty</li>
+                                        <li>Length between 2-50 characters</li>
+                                        <li>Only letters, spaces, hyphens, and apostrophes</li>
+                                        <li>Trims whitespace</li>
+                                    </ul>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Valid names:</strong>
+                                            <ul class="text-success">
+                                                <li>John Doe</li>
+                                                <li>Mary-Jane</li>
+                                                <li>O'Connor</li>
+                                                <li>Jean-Pierre</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Invalid names:</strong>
+                                            <ul class="text-danger">
+                                                <li>A (too short)</li>
+                                                <li>John123 (contains numbers)</li>
+                                                <li>Name@domain (special characters)</li>
+                                                <li>(empty string)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phone Validation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="phoneHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#phoneCollapse">
+                                    Phone Validation
+                                </button>
+                            </h2>
+                            <div id="phoneCollapse" class="accordion-collapse collapse" data-bs-parent="#validationAccordion">
+                                <div class="accordion-body">
+                                    <h6>What it checks:</h6>
+                                    <ul>
+                                        <li>Optional field (can be empty)</li>
+                                        <li>Removes all non-digit characters</li>
+                                        <li>Must have 10-15 digits</li>
+                                        <li>Returns clean digits only</li>
+                                    </ul>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Valid phones:</strong>
+                                            <ul class="text-success">
+                                                <li>(555) 123-4567 → 5551234567</li>
+                                                <li>+1-555-123-4567 → 15551234567</li>
+                                                <li>555.123.4567 → 5551234567</li>
+                                                <li>(empty) → None</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Invalid phones:</strong>
+                                            <ul class="text-danger">
+                                                <li>123456789 (too short)</li>
+                                                <li>1234567890123456 (too long)</li>
+                                                <li>abc-def-ghij (no digits)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- File Validation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="fileHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fileCollapse">
+                                    File Upload Validation
+                                </button>
+                            </h2>
+                            <div id="fileCollapse" class="accordion-collapse collapse" data-bs-parent="#validationAccordion">
+                                <div class="accordion-body">
+                                    <h6>What it checks:</h6>
+                                    <ul>
+                                        <li>File size limit (16MB max)</li>
+                                        <li>Allowed file extensions</li>
+                                        <li>Secure filename processing</li>
+                                        <li>Optional field handling</li>
+                                    </ul>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Allowed file types:</strong>
+                                            <ul class="text-success">
+                                                <li>.txt, .pdf</li>
+                                                <li>.png, .jpg, .jpeg, .gif</li>
+                                                <li>.doc, .docx</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Security measures:</strong>
+                                            <ul class="text-info">
+                                                <li>Filename sanitization</li>
+                                                <li>Extension whitelist</li>
+                                                <li>Size limit enforcement</li>
+                                                <li>Path traversal prevention</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Server-Side Validation Best Practices</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🛡️ Security Practices</h5>
+                            <ul>
+                                <li><strong>Never trust client input</strong> - Always validate on server</li>
+                                <li><strong>Sanitize data</strong> - Clean and normalize input</li>
+                                <li><strong>Use whitelists</strong> - Define what's allowed, not what's forbidden</li>
+                                <li><strong>Validate file uploads</strong> - Check type, size, and content</li>
+                                <li><strong>Escape output</strong> - Prevent XSS attacks</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>📋 Implementation Tips</h5>
+                            <ul>
+                                <li><strong>Use custom exceptions</strong> - Clear error handling</li>
+                                <li><strong>Validate early</strong> - Fail fast on invalid input</li>
+                                <li><strong>Provide clear messages</strong> - Help users fix errors</li>
+                                <li><strong>Log validation failures</strong> - Monitor for attacks</li>
+                                <li><strong>Keep validation functions pure</strong> - Easy to test</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Try It Out -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Try It Out!</h3>
+                </div>
+                <div class="card-body">
+                    <p>Now that you understand server-side validation, try submitting the contact form with various inputs to see how our validation works:</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Test Invalid Email:</h6>
+                            <ul>
+                                <li>plaintext</li>
+                                <li>@domain.com</li>
+                                <li>user@</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Test Invalid Name:</h6>
+                            <ul>
+                                <li>Single letter: "A"</li>
+                                <li>With numbers: "John123"</li>
+                                <li>Special chars: "User@name"</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Test Invalid Age:</h6>
+                            <ul>
+                                <li>Too young: 5</li>
+                                <li>Too old: 150</li>
+                                <li>Non-number: "abc"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ url_for('contact') }}" class="btn btn-primary">Go to Contact Form</a>
+                        <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Email Validation Demo -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Real-time Validation Demo</h3>
+                </div>
+                <div class="card-body">
+                    <p>This demonstrates how you can combine client-side and server-side validation using AJAX:</p>
+                    <div class="mb-3">
+                        <label for="emailTest" class="form-label">Test Email Validation:</label>
+                        <input type="email" class="form-control" id="emailTest" placeholder="Enter an email to test">
+                        <div id="emailFeedback" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('emailTest');
+    const emailFeedback = document.getElementById('emailFeedback');
+    
+    let timeout;
+    
+    emailInput.addEventListener('input', function() {
+        clearTimeout(timeout);
+        const email = this.value;
+        
+        if (!email) {
+            emailFeedback.innerHTML = '';
+            return;
+        }
+        
+        // Debounce the API call
+        timeout = setTimeout(() => {
+            fetch('/api/validate-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    emailFeedback.innerHTML = `<div class="alert alert-success">✅ Valid email: ${data.email}</div>`;
+                } else {
+                    emailFeedback.innerHTML = `<div class="alert alert-danger">❌ ${data.error}</div>`;
+                }
+            })
+            .catch(error => {
+                emailFeedback.innerHTML = `<div class="alert alert-warning">⚠️ Error checking email</div>`;
+            });
+        }, 500);
+    });
+});
+</script>
+{% endblock %} 

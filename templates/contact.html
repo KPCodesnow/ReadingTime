@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1>Enhanced Contact Form</h1>
+        <p class="lead">
+            This contact form demonstrates comprehensive Flask form handling with server-side validation.
+            Try submitting with various inputs to see our validation in action!
+        </p>
+        <div class="alert alert-warning">
+            <strong>Learning Tip:</strong> This form now includes comprehensive server-side validation. 
+            Try entering invalid data to see how the server validates and provides feedback.
+            <a href="{{ url_for('validation_demo') }}" class="alert-link">Learn more about server-side validation</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Send us a Message</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" id="contactForm">
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ form_data.name if form_data else '' }}"
+                               placeholder="Enter your full name" required>
+                        <div class="form-text">2-50 characters, letters only (spaces, hyphens, apostrophes allowed)</div>
+                    </div>
+                    
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ form_data.email if form_data else '' }}"
+                               placeholder="Enter your email address" required>
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    
+                    <!-- Phone Field -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" 
+                               value="{{ form_data.phone if form_data else '' }}"
+                               placeholder="(555) 123-4567">
+                        <div class="form-text">Optional. 10-15 digits, any format accepted.</div>
+                    </div>
+                    
+                    <!-- Age Field -->
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age *</label>
+                        <input type="number" class="form-control" id="age" name="age" 
+                               value="{{ form_data.age if form_data else '' }}"
+                               min="13" max="120" placeholder="Enter your age" required>
+                        <div class="form-text">Must be between 13 and 120 years old.</div>
+                    </div>
+                    
+                    <!-- Date Field -->
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Preferred Contact Date</label>
+                        <input type="date" class="form-control" id="date" name="date" 
+                               value="{{ form_data.date if form_data else '' }}">
+                        <div class="form-text">Optional. Cannot be in the future.</div>
+                    </div>
+                    
+                    <!-- Priority Field -->
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority Level *</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="priority" id="priority-low" value="low"
+                                       {{ 'checked' if form_data and form_data.priority == 'low' else '' }} required>
+                                <label class="form-check-label" for="priority-low">Low</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="priority" id="priority-medium" value="medium"
+                                       {{ 'checked' if form_data and form_data.priority == 'medium' else '' }}>
+                                <label class="form-check-label" for="priority-medium">Medium</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="priority" id="priority-high" value="high"
+                                       {{ 'checked' if form_data and form_data.priority == 'high' else '' }}>
+                                <label class="form-check-label" for="priority-high">High</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Topics Checkboxes -->
+                    <div class="mb-3">
+                        <label class="form-label">Topics of Interest</label>
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="web-development" id="topic-web"
+                                       {{ 'checked' if form_data and form_data.get('topics') and 'web-development' in form_data.get('topics', []) else '' }}>
+                                <label class="form-check-label" for="topic-web">Web Development</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="mobile-apps" id="topic-mobile"
+                                       {{ 'checked' if form_data and form_data.get('topics') and 'mobile-apps' in form_data.get('topics', []) else '' }}>
+                                <label class="form-check-label" for="topic-mobile">Mobile Apps</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="data-science" id="topic-data"
+                                       {{ 'checked' if form_data and form_data.get('topics') and 'data-science' in form_data.get('topics', []) else '' }}>
+                                <label class="form-check-label" for="topic-data">Data Science</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="ai-ml" id="topic-ai"
+                                       {{ 'checked' if form_data and form_data.get('topics') and 'ai-ml' in form_data.get('topics', []) else '' }}>
+                                <label class="form-check-label" for="topic-ai">AI/Machine Learning</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="topics" value="cybersecurity" id="topic-security"
+                                       {{ 'checked' if form_data and form_data.get('topics') and 'cybersecurity' in form_data.get('topics', []) else '' }}>
+                                <label class="form-check-label" for="topic-security">Cybersecurity</label>
+                            </div>
+                        </div>
+                        <div class="form-text">Select all that apply.</div>
+                    </div>
+                    
+                    <!-- Satisfaction Range -->
+                    <div class="mb-3">
+                        <label for="satisfaction" class="form-label">Satisfaction Rating: <span id="satisfactionValue">{{ form_data.satisfaction if form_data else '5' }}</span></label>
+                        <input type="range" class="form-range" id="satisfaction" name="satisfaction" 
+                               min="1" max="10" value="{{ form_data.satisfaction if form_data else '5' }}">
+                        <div class="d-flex justify-content-between">
+                            <small>1 (Poor)</small>
+                            <small>10 (Excellent)</small>
+                        </div>
+                    </div>
+                    
+                    <!-- File Upload -->
+                    <div class="mb-3">
+                        <label for="attachment" class="form-label">Attachment</label>
+                        <input type="file" class="form-control" id="attachment" name="attachment" 
+                               accept=".txt,.pdf,.png,.jpg,.jpeg,.gif,.doc,.docx">
+                        <div class="form-text">Optional. Allowed: txt, pdf, png, jpg, jpeg, gif, doc, docx (max 16MB)</div>
+                    </div>
+                    
+                    <!-- Message Field -->
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" 
+                                  placeholder="Enter your message here (minimum 10 characters)..." required>{{ form_data.message if form_data else '' }}</textarea>
+                        <div class="form-text">10-1000 characters required.</div>
+                    </div>
+                    
+                    <!-- Hidden Fields (for demonstration) -->
+                    <input type="hidden" name="form_version" value="2.0">
+                    <input type="hidden" name="timestamp" id="timestamp">
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="bi bi-envelope"></i> Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mt-4 mt-lg-0">
+            <div class="card-header">
+                <h5 class="mb-0">Server-Side Validation Features</h5>
+            </div>
+            <div class="card-body">
+                <h6>What gets validated:</h6>
+                <ul class="list-unstyled">
+                    <li>✅ <strong>Name:</strong> 2-50 chars, letters only</li>
+                    <li>✅ <strong>Email:</strong> Valid format, normalized</li>
+                    <li>✅ <strong>Phone:</strong> 10-15 digits (optional)</li>
+                    <li>✅ <strong>Age:</strong> 13-120 years</li>
+                    <li>✅ <strong>Date:</strong> Not in future (optional)</li>
+                    <li>✅ <strong>Priority:</strong> Valid selection</li>
+                    <li>✅ <strong>Topics:</strong> Valid options only</li>
+                    <li>✅ <strong>File:</strong> Type & size limits</li>
+                    <li>✅ <strong>Message:</strong> 10-1000 characters</li>
+                </ul>
+                
+                <hr>
+                
+                <h6>Test these invalid inputs:</h6>
+                <ul class="list-unstyled text-danger">
+                    <li>❌ Name: "A" or "John123"</li>
+                    <li>❌ Email: "plaintext" or "@domain.com"</li>
+                    <li>❌ Age: 5 or 150</li>
+                    <li>❌ Message: "short"</li>
+                    <li>❌ File: .exe or >16MB</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Learning Resources</h6>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('validation_demo') }}" class="btn btn-info btn-sm mb-2 d-block">
+                    📚 Server Validation Guide
+                </a>
+                <a href="{{ url_for('form_demo') }}" class="btn btn-secondary btn-sm d-block">
+                    📝 Form Concepts
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">🔍 What Happens When You Submit</h4>
+            <p>
+                <strong>1. Client-side:</strong> Browser validates basic requirements (required fields, email format)<br>
+                <strong>2. Server-side:</strong> Flask runs comprehensive validation on all fields<br>
+                <strong>3. Error handling:</strong> If validation fails, errors are shown and form data is preserved<br>
+                <strong>4. Success:</strong> If validation passes, data is processed and success message shown
+            </p>
+            <hr>
+            <p class="mb-0">
+                <strong>Code Location:</strong> Check out the enhanced <code>contact()</code> function and validation utilities in <code>app.py</code>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update satisfaction range display
+document.getElementById('satisfaction').addEventListener('input', function() {
+    document.getElementById('satisfactionValue').textContent = this.value;
+});
+
+// Set timestamp when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('timestamp').value = new Date().toISOString();
+});
+</script>
+{% endblock %} 

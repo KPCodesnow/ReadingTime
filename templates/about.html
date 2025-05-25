@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1>About This Project</h1>
+        <p class="lead">
+            This Python Web App is designed as a comprehensive learning resource for building 
+            web applications using Flask, one of Python's most popular web frameworks.
+        </p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h3>What You'll Learn</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Flask Fundamentals:</strong> Understanding routes, views, and the request-response cycle
+            </li>
+            <li class="list-group-item">
+                <strong>Templating:</strong> Using Jinja2 to create dynamic HTML templates
+            </li>
+            <li class="list-group-item">
+                <strong>Forms & Validation:</strong> Handling user input securely and efficiently
+            </li>
+            <li class="list-group-item">
+                <strong>Database Integration:</strong> Working with SQLAlchemy for data persistence
+            </li>
+            <li class="list-group-item">
+                <strong>User Authentication:</strong> Implementing login/logout functionality
+            </li>
+            <li class="list-group-item">
+                <strong>Error Handling:</strong> Creating custom error pages and debugging
+            </li>
+        </ul>
+    </div>
+    
+    <div class="col-md-6">
+        <h3>Technologies Used</h3>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Backend</h5>
+                <ul>
+                    <li><strong>Python 3.8+</strong> - Programming language</li>
+                    <li><strong>Flask</strong> - Web framework</li>
+                    <li><strong>Jinja2</strong> - Template engine</li>
+                    <li><strong>SQLAlchemy</strong> - Database ORM</li>
+                    <li><strong>WTForms</strong> - Form handling</li>
+                </ul>
+                
+                <h5 class="card-title mt-3">Frontend</h5>
+                <ul>
+                    <li><strong>HTML5</strong> - Markup</li>
+                    <li><strong>Bootstrap 5</strong> - CSS framework</li>
+                    <li><strong>JavaScript</strong> - Client-side scripting</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Learning Path</h3>
+        <div class="accordion" id="learningAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        Module 1: Basic Flask Application
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#learningAccordion">
+                    <div class="accordion-body">
+                        Start with creating a simple Flask app, understanding routes, and serving basic HTML pages.
+                        Learn about the Flask application structure and configuration.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        Module 2: Templates and Static Files
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#learningAccordion">
+                    <div class="accordion-body">
+                        Master Jinja2 templating, template inheritance, and serving static files like CSS and JavaScript.
+                        Create reusable components and layouts.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                        Module 3: Forms and User Input
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#learningAccordion">
+                    <div class="accordion-body">
+                        Learn to handle forms, validate user input, and implement CSRF protection.
+                        Work with different form fields and validation techniques.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Ready to Start?</h4>
+            <p>
+                This project is designed to be hands-on. Each module builds upon the previous one,
+                so you'll gradually develop a complete understanding of Flask web development.
+            </p>
+            <hr>
+            <p class="mb-0">
+                <a href="{{ url_for('contact') }}" class="btn btn-success">Try the Contact Form</a>
+                to see form handling in action!
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

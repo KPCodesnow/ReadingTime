@@ -1,49 +1,77 @@
-# Reading Time Tracking Application
+# PythonWebApp
 
-A React-based application for tracking reading time and managing parent-child reading activities.
+A learning project for Python web application development using Flask.
 
-## Features
+## Project Overview
 
-- Parent and child user roles with secure authentication
-- Reading time tracking
-- Parent dashboard for managing children's accounts
-- Child dashboard for tracking reading progress
-- Real-time data synchronization with Supabase
-- Modern UI with Tailwind CSS
+This repository contains a step-by-step learning journey for building web applications with Python. We'll start with basic Flask concepts and gradually build more complex features.
 
-## Tech Stack
+## Learning Objectives
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Supabase (Backend and Authentication)
+- Understand Flask framework fundamentals
+- Learn about routing and templates
+- Implement forms and user input handling
+- Work with databases (SQLite/PostgreSQL)
+- Add user authentication
+- Deploy web applications
+- Follow best practices for Python web development
 
-## Getting Started
+## Prerequisites
 
-1. Clone the repository
-2. Install dependencies:
+- Python 3.8 or higher
+- Basic understanding of Python programming
+- HTML/CSS knowledge (helpful but not required)
+
+## Setup Instructions
+
+1. Clone this repository:
    ```bash
-   npm install
+   git clone https://github.com/yourusername/PythonWebApp.git
+   cd PythonWebApp
    ```
-3. Create a `.env` file with your Supabase credentials:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-4. Start the development server:
+
+2. Create a virtual environment:
    ```bash
-   npm run dev
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-## Environment Setup
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Make sure you have Node.js and npm installed on your system.
+4. Run the application:
+   ```bash
+   python app.py
+   ```
+
+## Project Structure
+
+```
+PythonWebApp/
+├── app.py              # Main Flask application
+├── requirements.txt    # Python dependencies
+├── templates/          # HTML templates
+├── static/            # CSS, JS, images
+├── models/            # Database models
+└── README.md          # This file
+```
+
+## Learning Modules
+
+- [ ] Module 1: Basic Flask App
+- [ ] Module 2: Templates and Static Files
+- [ ] Module 3: Forms and User Input
+- [ ] Module 4: Database Integration
+- [ ] Module 5: User Authentication
+- [ ] Module 6: API Development
+- [ ] Module 7: Deployment
 
 ## Contributing
 
-Feel free to submit issues and pull requests.
+This is a learning project. Feel free to experiment and add your own features!
 
 ## License
 
-MIT License 
+MIT License - feel free to use this code for learning purposes. 
